@@ -6,6 +6,20 @@
 	objectVersion = 46;
 	objects = {
 
+/* Begin PBXAggregateTarget section */
+		BA91C13E266F0C7600E6486F /* SpreadsheetView-Universal */ = {
+			isa = PBXAggregateTarget;
+			buildConfigurationList = BA91C141266F0C7600E6486F /* Build configuration list for PBXAggregateTarget "SpreadsheetView-Universal" */;
+			buildPhases = (
+				BA91C142266F0C7A00E6486F /* Universal Build Script */,
+			);
+			dependencies = (
+			);
+			name = "SpreadsheetView-Universal";
+			productName = "SpreadsheetView-Universal";
+		};
+/* End PBXAggregateTarget section */
+
 /* Begin PBXBuildFile section */
 		141210001EE1D7A7004E41A3 /* SpreadsheetView+UISnapshotting.swift in Sources */ = {isa = PBXBuildFile; fileRef = 14120FFF1EE1D7A7004E41A3 /* SpreadsheetView+UISnapshotting.swift */; };
 		143664BD1EB59DCA00321E5E /* ViewTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 143664BC1EB59DCA00321E5E /* ViewTests.swift */; };
@@ -375,6 +389,10 @@
 						LastSwiftMigration = 0900;
 						ProvisioningStyle = Automatic;
 					};
+					BA91C13E266F0C7600E6486F = {
+						CreatedOnToolsVersion = 12.5;
+						ProvisioningStyle = Automatic;
+					};
 				};
 			};
 			buildConfigurationList = 149E6A631EADE047000D851D /* Build configuration list for PBXProject "SpreadsheetView" */;
@@ -394,6 +412,7 @@
 				149E6A681EADE047000D851D /* SpreadsheetView */,
 				149E6A711EADE047000D851D /* SpreadsheetViewTests */,
 				149E6AA21EADE19F000D851D /* HostApp */,
+				BA91C13E266F0C7600E6486F /* SpreadsheetView-Universal */,
 			);
 		};
 /* End PBXProject section */
@@ -423,6 +442,27 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXResourcesBuildPhase section */
+
+/* Begin PBXShellScriptBuildPhase section */
+		BA91C142266F0C7A00E6486F /* Universal Build Script */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+			);
+			name = "Universal Build Script";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "# 1\n# Set bash script to exit immediately if any commands fail.\nset -e\n\n# 2\n# Define variables.\nFRAMEWORK_NAME=\"SpreadsheetView\"\nCONFIGURATION=\"Release\"\nBUILD_PATH=\"${SRCROOT}/build\"\nUNIVERAL_BUILD_PATH=\"${BUILD_PATH}/${CONFIGURATION}-universal\"\n\n# 3\n# If remnants from a previous build exist, delete them.\nif [ -d \"${BUILD_PATH}\" ]; then\nrm -rf \"${BUILD_PATH}\"\nfi\n\n# 3\n# Build the framework for device and for simulator (using all needed architectures).\nxcodebuild -target \"${FRAMEWORK_NAME}\" -configuration ${CONFIGURATION} ONLY_ACTIVE_ARCH=NO DEFINES_MODULE=YES -sdk \"iphoneos\" -arch arm64 -arch arm64e -arch armv7 -arch armv7s\n\n# 4\n# Build the framework for simulator.\nxcodebuild -target \"${FRAMEWORK_NAME}\" -configuration ${CONFIGURATION} ONLY_ACTIVE_ARCH=NO DEFINES_MODULE=YES -sdk \"iphonesimulator\" -arch x86_64 -arch i386\n\n# 5\n# Create directory to universal build.\nmkdir \"${UNIVERAL_BUILD_PATH}\"\n\n# 6\n# Copy the built device version of framework to univerasal build directory.\ncp -r \"${BUILD_PATH}/${CONFIGURATION}-iphoneos/${FRAMEWORK_NAME}.framework\" \"${UNIVERAL_BUILD_PATH}/\"\n\n# 7\n# Copy the swift module mappings for the simulator into the universal framework.\n# The device mappings already exist.\ncp -r \"${BUILD_PATH}/${CONFIGURATION}-iphonesimulator/${FRAMEWORK_NAME}.framework/Modules/${FRAMEWORK_NAME}.swiftmodule/\" \"${UNIVERAL_BUILD_PATH}/${FRAMEWORK_NAME}.framework/Modules/${FRAMEWORK_NAME}.swiftmodule\"\n\n# 8\n# Replace the framework executable within the framework with\n# a new version created by merging the device and simulator frameworks executables with lipo.\nlipo -create -output \"${UNIVERAL_BUILD_PATH}/${FRAMEWORK_NAME}.framework/${FRAMEWORK_NAME}\" \"${BUILD_PATH}/${CONFIGURATION}-iphoneos/${FRAMEWORK_NAME}.framework/${FRAMEWORK_NAME}\" \"${BUILD_PATH}/${CONFIGURATION}-iphonesimulator/${FRAMEWORK_NAME}.framework/${FRAMEWORK_NAME}\"\n\n# 9\n# Open the build directory in finder\nopen \"${BUILD_PATH}\"\n";
+		};
+/* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
 		149E6A641EADE047000D851D /* Sources */ = {
@@ -632,6 +672,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				APPLICATION_EXTENSION_API_ONLY = YES;
+				BUILD_LIBRARY_FOR_DISTRIBUTION = YES;
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "";
 				DEFINES_MODULE = YES;
 				DEVELOPMENT_TEAM = 27AEDK3C9F;
@@ -653,6 +694,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				APPLICATION_EXTENSION_API_ONLY = YES;
+				BUILD_LIBRARY_FOR_DISTRIBUTION = YES;
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "";
 				DEFINES_MODULE = YES;
 				DEVELOPMENT_TEAM = 27AEDK3C9F;
@@ -730,6 +772,22 @@
 			};
 			name = Release;
 		};
+		BA91C13F266F0C7600E6486F /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+			};
+			name = Debug;
+		};
+		BA91C140266F0C7600E6486F /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+			};
+			name = Release;
+		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
@@ -765,6 +823,15 @@
 			buildConfigurations = (
 				149E6AB31EADE19F000D851D /* Debug */,
 				149E6AB41EADE19F000D851D /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		BA91C141266F0C7600E6486F /* Build configuration list for PBXAggregateTarget "SpreadsheetView-Universal" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				BA91C13F266F0C7600E6486F /* Debug */,
+				BA91C140266F0C7600E6486F /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
